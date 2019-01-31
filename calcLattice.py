@@ -124,7 +124,6 @@ def find_complement_particle_position(original_particle,
                                    + 2.0 * original_arm_direction_vector[0],
                                    original_particle_position[1] \
                                    + 2.0 * original_arm_direction_vector[1])
-    #will break in python 3: do list(map(round, complement_particle_position))
     complement_particle_position = [ round(x, 3) for x in complement_particle_position ]
     return(complement_particle_position)
 
@@ -133,7 +132,19 @@ positions_list = [(0.,0.)]
 orientations_list = [0.]
 types_list = [0]
 
+def reset():
+    global tiles, positions_list, orientations_list, types_list
+    tiles.clear()
+    positions_list.clear()
+    positions_list.append((0., 0.))
+    orientations_list.clear()
+    orientations_list.append(0.)
+    types_list.clear()
+    types_list.append(0)
+
 def make_lattice():
+    global tiles, positions_list, orientations_list, types_list, gluing_mapping
+
     first_tile = make_tile((0.,0.),0.,0)
     tiles.append(first_tile)
 
@@ -165,5 +176,3 @@ def make_lattice():
                                          complement_particle_type)
                     tiles.append(new_tile)
     pass
-
-make_lattice()

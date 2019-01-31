@@ -6,14 +6,8 @@ import matplotlib as mpl
 from matplotlib.collections import PatchCollection
 from calcLattice import *
 
-##########
-make_lattice()
-#########
-
-fig = plt.figure()
-ax = fig.add_subplot(111)
-
-def addTripod((posX, posY), orientation, type):
+def addTripod(coord, orientation, type):
+  posX, posY = coord
 
   height = 0.35
   pos0 = (0.02886, -height/2.)
@@ -38,37 +32,3 @@ def addTripod((posX, posY), orientation, type):
 
   return (colors, allPatches)
 
-######################################################
-# User input of positions, orientations and types
-# allPositions = (
-#     (0., 0.),
-#     (2., 0.),
-#     (-2. * math.cos(math.pi/3.), 2. * math.sin(math.pi/3.)),
-#     (2. + 2. * math.cos(math.pi/3.), 2. * math.sin(math.pi/3.)),
-#     (0., 4. * math.sin(math.pi/3.)),
-#     (2., 4. * math.sin(math.pi/3.)))
-# allOrientations = (0, 60, -60, 120, -120, 180)
-# allTypes = (0, 0, 0, 0, 0, 0)
-allPositions = positions_list
-allOrientations = orientations_list #in rad
-allTypes = types_list
-######################################################
-
-normi = mpl.colors.Normalize(vmin=0, vmax=1)
-colorArray = np.empty((0,3))
-patchesList = []
-
-for pos, ort, types in zip(allPositions, allOrientations, allTypes):
-    newTripod = addTripod(pos, math.degrees(ort), types)
-    colorArray = np.append(colorArray, [newTripod[0]], axis=0)
-    patchesList += newTripod[1]
-
-collection = PatchCollection(
-        patchesList, cmap=mpl.cm.Paired,
-        norm=normi, alpha=0.8)
-collection.set_array(colorArray.flatten())
-ax.add_collection(collection)
-
-plt.axis('scaled')
-# plt.show()
-plt.savefig('lattice.png', dpi=300)
