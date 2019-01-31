@@ -3,11 +3,11 @@ import numpy as np
 
 ####################################
 # User-defined input
-angles = ((0, 2*math.pi/3, 4*math.pi/3),
-          (0, 2*math.pi/3, 4*math.pi/3),
-          (0, 2*math.pi/3, 4*math.pi/3))
-lengths = ((1, 1, 1),(1, 1, 1),(1,1,1))
-IDs = ((1,2,3),(4,5,6),(7,8,9))
+angles = [[0, 2*math.pi/3, 4*math.pi/3],
+          [0, 2*math.pi/3, 4*math.pi/3],
+          [0, 2*math.pi/3, 4*math.pi/3]]
+lengths = [[1, 1, 1],[1, 1, 1],[1, 1, 1]]
+IDs = [[1,2,3],[4,5,6],[7,8,9]]
 
 # gluing_mapping = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} #dimer
 # gluing_mapping = {1:1, 2:0, 3:0, 4:0, 5:0, 6:0} #dimer
