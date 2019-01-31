@@ -6,6 +6,8 @@ import matplotlib as mpl
 from matplotlib.collections import PatchCollection
 from calcLattice import *
 
+global tiles, positions_list, orientations_list, types_list, gluing_mapping
+
 def addTripod(coord, orientation, type):
   posX, posY = coord
 
@@ -32,3 +34,29 @@ def addTripod(coord, orientation, type):
 
   return (colors, allPatches)
 
+def make_figure():
+    fig = plt.figure(figsize=(10,10))
+    ax = fig.add_subplot(111)
+
+    allPositions = positions_list
+
+    allOrientations = orientations_list #in rad
+    allTypes = types_list
+
+    normi = mpl.colors.Normalize(vmin=0, vmax=1)
+    colorArray = np.empty((0,3))
+    patchesList = []
+
+    for pos, ort, types in zip(allPositions, allOrientations, allTypes):
+        newTripod = addTripod(pos, math.degrees(ort), types)
+        colorArray = np.append(colorArray, [newTripod[0]], axis=0)
+        patchesList += newTripod[1]
+
+    collection = PatchCollection(
+        patchesList, cmap=mpl.cm.Paired,
+        norm=normi, alpha=0.8)
+    collection.set_array(colorArray.flatten())
+    ax.add_collection(collection)
+
+    plt.axis('scaled')
+    return fig
