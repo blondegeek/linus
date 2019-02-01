@@ -26,6 +26,37 @@ gluing_mapping = {1:1, 2:4, 3:0, 4:2, 5:0, 6:8, 7:9, 8:6, 9:7} #triangular holes
 max_iterations = 300
 ####################################
 
+def set_up_quadpods():
+    global angles, lengths, IDs
+
+    for i in range(len(angles)):
+        angles[i].clear()
+        angles[i].extend([0, 2*math.pi/4, 4*math.pi/4, 6*math.pi/4])
+
+    for i in range(len(lengths)):
+        lengths[i].clear()
+        lengths[i].extend([1, 1, 1, 1])
+
+    for i in range(len(IDs)):
+        IDs[i].clear()
+        IDs[i].extend(list(range(i*4 + 1, (i+1)*4 + 1)))
+
+def set_up_tripods():
+    global angles, lengths, IDs
+    
+    for i in range(len(angles)):
+        angles[i].clear()
+        angles[i].extend([0, 2*math.pi/3, 4*math.pi/3])
+
+    for i in range(len(lengths)):
+        lengths[i].clear()
+        lengths[i].extend([1, 1, 1])
+
+    for i in range(len(IDs)):
+        IDs[i].clear()
+        IDs[i].extend(list(range(i*3 + 1, (i+1)*3 + 1)))
+
+
 class Tile:
     """
     Array with attributes for each tile.
