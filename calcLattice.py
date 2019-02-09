@@ -23,7 +23,7 @@ IDs = [[1,2,3],[4,5,6],[7,8,9]]
 # gluing_mapping = {1:4, 2:3, 3:2, 4:1, 5:0, 6:7, 7:6, 8:8, 9:0} # big holes
 gluing_mapping = {1:1, 2:4, 3:0, 4:2, 5:0, 6:8, 7:9, 8:6, 9:7} #triangular holes
 
-max_iterations = 300
+max_iterations = [300]
 ####################################
 
 def set_up_quadpods():
@@ -175,12 +175,14 @@ def reset():
 
 def make_lattice():
     global tiles, positions_list, orientations_list, types_list, gluing_mapping
+    global max_iterations
 
+    print(max_iterations)
     first_tile = make_tile((0.,0.),0.,0)
     tiles.append(first_tile)
 
     for tile in tiles:
-        if (len(tiles) > max_iterations):
+        if (len(tiles) > max_iterations[0]):
             break
         for arm_index, arm in enumerate(tile.arms, start = 0):
             arm_ID = arm.ID[0]
