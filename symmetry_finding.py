@@ -18,14 +18,14 @@ import itertools
 global tiles, positions_list, orientations_list, types_list, gluing_mapping
 
 # TODO: Add ability to do radial shells
-def ylms_within_r_cutoff(coords, r_cutoff):
+def ylms_within_r_cutoff(coords, r_cutoff, L_max=5):
     phi, theta = xyz_to_phi_theta(coords)
     r = np.linalg.norm(coords, axis=-1)
     r_shape = r.shape  # [N...]
     r.reshape(1, *r_shape) # [1, N...]
     r_cutoff = [r_cutoff] if type(r_cutoff) == float or type(r_cutoff) == int else r_cutoff
     sort_indices = np.argsort(r, axis=-1)
-    ylms = get_Ylm_coeffs(phi, theta, sum=False)  # [R, N...]
+    ylms = get_Ylm_coeffs(phi, theta, sum=False, L_max=L_max)  # [R, N...]
     output = []
     for r_cut in r_cutoff:
         ylms_cutoff = np.where((r > 0.) & (r <= r_cut), ylms, np.zeros(ylms.shape))
@@ -40,9 +40,14 @@ def norm_sph(array):
         output[:, L] = np.linalg.norm(array[:, L ** 2: (L + 1) ** 2], axis=-1)
     return output
 
-def get_sph_and_norm_clusters(coords, r_cutoff, n_clusters_sph=20, n_clusters_norm=10):
+def get_sph_and_norm_clusters(coords, r_cutoff, n_clusters_sph=20, n_clusters_norm=10, round_sph=None, round_norm=None):
     ylms_cutoff = np.sum(ylms_within_r_cutoff(coords, r_cutoff)[0], axis=-1)
     local_cutoff_norms = norm_sph(ylms_cutoff.T)
+
+    if round_sph:
+        ylms_cutoff = np.round(ylms_cutoff, round_sph)
+    if round_norm:
+        local_cutoff_norms = np.round(local_cutoff_norms, round_norm)
     
     kmeans_norm = KMeans(n_clusters=10, random_state=0).fit(local_cutoff_norms)
     kmeans_sph = KMeans(n_clusters=20, random_state=0).fit(ylms_cutoff.T)
@@ -60,6 +65,7 @@ def make_cluster_dict(labels, pos, classes=None):
 
 def get_cluster_function(clusters, function):
     cluster_function_dict = {cluster: [] for cluster in clusters}
+    pairs_dict = {cluster: [] for cluster in clusters}
     for cluster in clusters:
        points = clusters[cluster]
        if len(points) > 2:
@@ -67,4 +73,5 @@ def get_cluster_function(clusters, function):
                one, two = pair
                cluster_function_dict[cluster].append(
                    function(points[one], points[two]))
-    return cluster_function_dict
+               pairs_dict[cluster].append((one, two))
+    return cluster_function_dict, pairs_dict
