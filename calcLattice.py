@@ -3,11 +3,11 @@ import numpy as np
 
 ####################################
 # User-defined input
-angles = ((0, 2*math.pi/3, 4*math.pi/3),
-          (0, 2*math.pi/3, 4*math.pi/3),
-          (0, 2*math.pi/3, 4*math.pi/3))
-lengths = ((1, 1, 1),(1, 1, 1),(1,1,1))
-IDs = ((1,2,3),(4,5,6),(7,8,9))
+angles = [[0, 2*math.pi/3, 4*math.pi/3],
+          [0, 2*math.pi/3, 4*math.pi/3],
+          [0, 2*math.pi/3, 4*math.pi/3]]
+lengths = [[1, 1, 1],[1, 1, 1],[1, 1, 1]]
+IDs = [[1,2,3],[4,5,6],[7,8,9]]
 
 # gluing_mapping = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} #dimer
 # gluing_mapping = {1:1, 2:0, 3:0, 4:0, 5:0, 6:0} #dimer
@@ -23,8 +23,39 @@ IDs = ((1,2,3),(4,5,6),(7,8,9))
 # gluing_mapping = {1:4, 2:3, 3:2, 4:1, 5:0, 6:7, 7:6, 8:8, 9:0} # big holes
 gluing_mapping = {1:1, 2:4, 3:0, 4:2, 5:0, 6:8, 7:9, 8:6, 9:7} #triangular holes
 
-max_iterations = 300
+max_iterations = [300]
 ####################################
+
+def set_up_quadpods():
+    global angles, lengths, IDs
+
+    for i in range(len(angles)):
+        angles[i].clear()
+        angles[i].extend([0, 2*math.pi/4, 4*math.pi/4, 6*math.pi/4])
+
+    for i in range(len(lengths)):
+        lengths[i].clear()
+        lengths[i].extend([1, 1, 1, 1])
+
+    for i in range(len(IDs)):
+        IDs[i].clear()
+        IDs[i].extend(list(range(i*4 + 1, (i+1)*4 + 1)))
+
+def set_up_tripods():
+    global angles, lengths, IDs
+    
+    for i in range(len(angles)):
+        angles[i].clear()
+        angles[i].extend([0, 2*math.pi/3, 4*math.pi/3])
+
+    for i in range(len(lengths)):
+        lengths[i].clear()
+        lengths[i].extend([1, 1, 1])
+
+    for i in range(len(IDs)):
+        IDs[i].clear()
+        IDs[i].extend(list(range(i*3 + 1, (i+1)*3 + 1)))
+
 
 class Tile:
     """
@@ -124,7 +155,6 @@ def find_complement_particle_position(original_particle,
                                    + 2.0 * original_arm_direction_vector[0],
                                    original_particle_position[1] \
                                    + 2.0 * original_arm_direction_vector[1])
-    #will break in python 3: do list(map(round, complement_particle_position))
     complement_particle_position = [ round(x, 3) for x in complement_particle_position ]
     return(complement_particle_position)
 
@@ -133,12 +163,26 @@ positions_list = [(0.,0.)]
 orientations_list = [0.]
 types_list = [0]
 
+def reset():
+    global tiles, positions_list, orientations_list, types_list
+    tiles.clear()
+    positions_list.clear()
+    positions_list.append((0., 0.))
+    orientations_list.clear()
+    orientations_list.append(0.)
+    types_list.clear()
+    types_list.append(0)
+
 def make_lattice():
+    global tiles, positions_list, orientations_list, types_list, gluing_mapping
+    global max_iterations
+
+    print(max_iterations)
     first_tile = make_tile((0.,0.),0.,0)
     tiles.append(first_tile)
 
     for tile in tiles:
-        if (len(tiles) > max_iterations):
+        if (len(tiles) > max_iterations[0]):
             break
         for arm_index, arm in enumerate(tile.arms, start = 0):
             arm_ID = arm.ID[0]
@@ -165,5 +209,3 @@ def make_lattice():
                                          complement_particle_type)
                     tiles.append(new_tile)
     pass
-
-make_lattice()
