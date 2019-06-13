@@ -34,7 +34,7 @@ def ylms_within_r_cutoff(coords, r_cutoff, L_max=5):
 
 def norm_sph(array):
     N, L_sum = array.shape
-    L_max = int(np.sqrt(L_sum - 1))
+    L_max = int(np.sqrt(L_sum) - 1)
     output = np.zeros((N, L_max + 1))
     for L in range(L_max + 1):
         output[:, L] = np.linalg.norm(array[:, L ** 2: (L + 1) ** 2], axis=-1)
